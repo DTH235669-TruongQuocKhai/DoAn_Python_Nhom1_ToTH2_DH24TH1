@@ -1,4 +1,5 @@
 * ĐỒ ÁN MÔN HỌC: HỆ THỐNG QUẢN LÝ BÀI HÁT
+
 🚀 Giới Thiệu Chung
 Đây là đồ án môn học Python nhằm xây dựng một hệ thống quản lý cơ sở dữ liệu chuyên biệt cho việc quản lý thông tin về các bài hát, ca sĩ, album và thể loại bài hát.
 
