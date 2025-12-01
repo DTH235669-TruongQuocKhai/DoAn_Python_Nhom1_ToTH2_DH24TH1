@@ -7,6 +7,8 @@ import datetime
 from db_utility import connect_db, get_all_codes
 import pyodbc
 
+from db_utility import connect_db, get_all_codes, export_to_excel # Thêm export_to_excel
+
 # --- Khai báo biến Global cho tab này ---
 entry_macs = None
 entry_tencs = None
@@ -213,15 +215,31 @@ def setup_casi_tab(tab, root):
         finally:
             if conn: conn.close() 
 
+
+    def export_excel_cs():
+        """Lấy dữ liệu từ Treeview Ca Sĩ và xuất ra Excel."""
+        # Lấy tiêu đề cột
+        headings = ["Mã CS", "Tên Ca Sĩ", "Ngày Sinh", "Quốc Tịch", "Giới Tính", "Mô Tả"]
+
+        # Lấy dữ liệu
+        data = [tree_cs.item(child)['values'] for child in tree_cs.get_children()]
+
+        # Xuất file
+        export_to_excel("Ca Sĩ", headings, data)
+
     # ====== Frame nút Ca Sĩ ====== 
     frame_btn = tk.Frame(tab) 
     frame_btn.pack(pady=10) 
-    
+
+
     tk.Button(frame_btn, text="Thêm", width=8, command=them_cs).grid(row=0, column=0, padx=5) 
     tk.Button(frame_btn, text="Lưu", width=8, command=luu_cs).grid(row=0, column=1, padx=5) 
     tk.Button(frame_btn, text="Sửa", width=8, command=sua_cs).grid(row=0, column=2, padx=5) 
     tk.Button(frame_btn, text="Hủy", width=8, command=clear_input_cs).grid(row=0, column=3, padx=5) 
     tk.Button(frame_btn, text="Xóa", width=8, command=xoa_cs).grid(row=0, column=4, padx=5) 
-    tk.Button(frame_btn, text="Thoát", width=8, command=root.quit).grid(row=0, column=5, padx=5) 
-    
+
+    # THÊM NÚT XUẤT EXCEL
+    tk.Button(frame_btn, text="Xuất Excel", width=10, command=export_excel_cs).grid(row=0, column=5, padx=5) 
+
+    tk.Button(frame_btn, text="Thoát", width=8, command=root.quit).grid(row=0, column=6, padx=5) # Thay đổi column thành 6
     load_data_cs()

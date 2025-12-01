@@ -8,6 +8,8 @@ import datetime
 from db_utility import connect_db, get_all_codes
 import pyodbc
 
+from db_utility import connect_db, get_all_codes, export_to_excel # Thêm export_to_excel
+
 # --- Khai báo biến Global cho tab này (Cần thiết cho các hàm CRUD và Refresh) ---
 entry_mabh = None
 entry_tenbh = None
@@ -249,6 +251,13 @@ def setup_baihat_tab(tab, root):
         finally:
             if conn: conn.close() 
 
+# ====== HÀM XUẤT EXCEL MỚI ======
+    def export_excel_bh():
+        """Lấy dữ liệu từ Treeview Bài Hát và xuất ra Excel."""
+        headings = ["Mã BH", "Tên Bài Hát", "Thời Lượng", "Ngày PH", "Mã Ca Sĩ", "Mã Thể Loại", "Mã Album"]
+        data = [tree_bh.item(child)['values'] for child in tree_bh.get_children()]
+        export_to_excel("Bài Hát", headings, data)
+
     # ====== Frame nút Bài Hát ====== 
     frame_btn = tk.Frame(tab) 
     frame_btn.pack(pady=10) 
@@ -263,5 +272,10 @@ def setup_baihat_tab(tab, root):
     tk.Button(frame_btn, text="Làm Mới ", width=12, command=refresh_foreign_key_comboboxes).grid(row=0, column=5, padx=5) 
     
     tk.Button(frame_btn, text="Thoát", width=8, command=root.quit).grid(row=0, column=6, padx=5) 
+
+# THÊM NÚT XUẤT EXCEL
+    tk.Button(frame_btn, text="Xuất Excel", width=10, command=export_excel_bh).grid(row=0, column=6, padx=5) 
+    
+    tk.Button(frame_btn, text="Thoát", width=8, command=root.quit).grid(row=0, column=7, padx=5)
     
     load_data_bh()

@@ -1,7 +1,10 @@
 # db_utility.py
 
 import pyodbc
-from tkinter import messagebox
+from tkinter import messagebox, filedialog
+import datetime
+from openpyxl import Workbook
+import os
 
 # ===================== CẤU HÌNH KẾT NỐI DATABASE (SQL Server) =====================
 def connect_db():
@@ -51,3 +54,48 @@ def get_all_codes(table_name, code_column):
     finally:
         if conn: conn.close()
     return codes
+
+# ====== Hàm hỗ trợ Xuất Excel ======
+def export_to_excel(title, headings, data):
+    """Xuất dữ liệu từ Treeview ra file Excel (.xlsx)."""
+    try:
+        # Mở hộp thoại lưu file
+        file_path = filedialog.asksaveasfilename(
+            defaultextension=".xlsx",
+            filetypes=[("Excel files", "*.xlsx")],
+            title=f"Lưu danh sách {title} vào Excel",
+            initialfile=f"DanhSach{title}_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}.xlsx"
+        )
+        
+        if not file_path:
+            return  # Người dùng hủy
+
+        wb = Workbook()
+        ws = wb.active
+        ws.title = title
+        
+        # Ghi tiêu đề cột (headings)
+        ws.append(headings)
+        
+        # Ghi dữ liệu
+        for row in data:
+            ws.append(row)
+        
+        # Tự động điều chỉnh độ rộng cột (tùy chọn)
+        for col in ws.columns:
+            max_length = 0
+            column = col[0].column_letter # Lấy tên cột, ví dụ 'A'
+            for cell in col:
+                try:
+                    if len(str(cell.value)) > max_length:
+                        max_length = len(cell.value)
+                except:
+                    pass
+            adjusted_width = (max_length + 2)
+            ws.column_dimensions[column].width = adjusted_width
+
+        wb.save(file_path)
+        messagebox.showinfo("Thành công", f"Đã xuất thành công danh sách {title} ra:\n{file_path}")
+
+    except Exception as e:
+        messagebox.showerror("Lỗi Xuất Excel", f"Lỗi: {e}")

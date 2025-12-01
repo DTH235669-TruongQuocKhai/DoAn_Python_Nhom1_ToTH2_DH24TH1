@@ -7,6 +7,7 @@ import datetime
 from db_utility import connect_db, get_all_codes
 import pyodbc
 
+from db_utility import connect_db, get_all_codes, export_to_excel # Thêm export_to_excel
 
 # --- Khai báo biến Global cho tab này ---
 entry_maalb = None
@@ -189,6 +190,15 @@ def setup_album_tab(tab, root):
         finally:
             if conn: conn.close() 
 
+    def export_excel_alb():
+        """Lấy dữ liệu từ Treeview Album và xuất ra Excel."""
+        headings = ["Mã Album", "Tên Album", "Ngày PH", "Hãng PH"]
+        data = [tree_alb.item(child)['values'] for child in tree_alb.get_children()]
+        export_to_excel("Album", headings, data)
+
+
+
+
     # ====== Frame nút Album ====== 
     frame_btn = tk.Frame(tab) 
     frame_btn.pack(pady=10) 
@@ -199,5 +209,10 @@ def setup_album_tab(tab, root):
     tk.Button(frame_btn, text="Hủy", width=8, command=clear_input_alb).grid(row=0, column=3, padx=5) 
     tk.Button(frame_btn, text="Xóa", width=8, command=xoa_alb).grid(row=0, column=4, padx=5) 
     tk.Button(frame_btn, text="Thoát", width=8, command=root.quit).grid(row=0, column=5, padx=5) 
+
+    # THÊM NÚT XUẤT EXCEL
+    tk.Button(frame_btn, text="Xuất Excel", width=10, command=export_excel_alb).grid(row=0, column=5, padx=5) 
+    
+    tk.Button(frame_btn, text="Thoát", width=8, command=root.quit).grid(row=0, column=6, padx=5)
     
     load_data_alb()

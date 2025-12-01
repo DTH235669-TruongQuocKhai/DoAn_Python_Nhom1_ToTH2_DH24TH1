@@ -5,6 +5,8 @@ from tkinter import ttk, messagebox
 from db_utility import connect_db, get_all_codes
 import pyodbc
 
+from db_utility import connect_db, get_all_codes, export_to_excel # Thêm export_to_excel
+
 
 # --- Khai báo biến Global cho tab này ---
 entry_matl_tl = None
@@ -166,6 +168,13 @@ def setup_theloai_tab(tab, root):
         finally:
             if conn: conn.close() 
 
+# ====== HÀM XUẤT EXCEL MỚI ======
+    def export_excel_tl():
+        """Lấy dữ liệu từ Treeview Thể Loại và xuất ra Excel."""
+        headings = ["Mã TL", "Tên Thể Loại", "Mô Tả"]
+        data = [tree_tl.item(child)['values'] for child in tree_tl.get_children()]
+        export_to_excel("Thể Loại", headings, data)
+
     # ====== Frame nút Thể Loại ====== 
     frame_btn = tk.Frame(tab) 
     frame_btn.pack(pady=10) 
@@ -176,5 +185,10 @@ def setup_theloai_tab(tab, root):
     tk.Button(frame_btn, text="Hủy", width=8, command=clear_input_tl).grid(row=0, column=3, padx=5) 
     tk.Button(frame_btn, text="Xóa", width=8, command=xoa_tl).grid(row=0, column=4, padx=5) 
     tk.Button(frame_btn, text="Thoát", width=8, command=root.quit).grid(row=0, column=5, padx=5) 
+
+    # THÊM NÚT XUẤT EXCEL
+    tk.Button(frame_btn, text="Xuất Excel", width=10, command=export_excel_tl).grid(row=0, column=5, padx=5) 
+    
+    tk.Button(frame_btn, text="Thoát", width=8, command=root.quit).grid(row=0, column=6, padx=5)
     
     load_data_tl()
